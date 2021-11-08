@@ -6,4 +6,28 @@
     <UseWPF>true</UseWPF>
   </PropertyGroup>
 
+<ItemGroup>
+	<Resource Include="Resources\Images\App_back.png" />
+	<Resource Include="Resources\Images\App_forward.png" />
+	<Resource Include="Resources\Images\Diskanalyzer.png" />
+	<Resource Include="Resources\Images\File_about.png" />
+	<Resource Include="Resources\Images\File_exit.png" />
+	<Resource Include="Resources\Images\File_export.png" />
+	<Resource Include="Resources\Images\File_export_pdffile.png" />
+	<Resource Include="Resources\Images\File_export_printsetup.png" />
+	<Resource Include="Resources\Images\Home_allocatedspace.png" />
+	<Resource Include="Resources\Images\Home_expand.png" />
+	<Resource Include="Resources\Images\Home_filecount.png" />
+	<Resource Include="Resources\Images\Home_percent.png" />
+	<Resource Include="Resources\Images\Home_refresh.png" />
+	<Resource Include="Resources\Images\Home_selectdirectory.png" />
+	<Resource Include="Resources\Images\Home_selectdirectory_drive.png" />
+	<Resource Include="Resources\Images\Home_size.png" />
+	<Resource Include="Resources\Images\Home_stopscan.png" />
+	<Resource Include="Resources\Images\Home_units.png" />
+	<Resource Include="Resources\Images\Scan_openlocation.png" />
+	<Resource Include="Resources\Images\Scan_printreport.png" />
+	<Resource Include="Resources\Images\VisualStudio.png" />
+</ItemGroup>
+
 </Project>
