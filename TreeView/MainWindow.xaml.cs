@@ -45,18 +45,26 @@ namespace TreeView
         private void bSelectDirectory_gScan_Click(object sender, RoutedEventArgs e)
         {
             //Thread t = new Thread(new ParameterizedThreadStart(StartScan));
-            DriveModel drive = (DriveModel)((RibbonMenuItem)e.OriginalSource).DataContext;
-            //MessageBox.Show(drive.Name);
-            //t.Start(drive.Name);
-            StartScan(drive.Name);
-            //ObservableCollection<FolderModel> folders = new() { ScanDirectory.RecursiveScan(drive.Name) };
-            //directoryTree.ItemsSource = folders;
+            if (e.OriginalSource is RibbonMenuItem)
+            {
+                DriveModel drive = (DriveModel)((RibbonMenuItem)e.OriginalSource).DataContext;
+                //MessageBox.Show(drive.Name);
+                //t.Start(drive.Name);
+                StartScan(drive.Name);
+                //ObservableCollection<FolderModel> folders = new() { ScanDirectory.RecursiveScan(drive.Name) };
+                //directoryTree.ItemsSource = folders;
+            }
+            else if (sender is RibbonSplitButton)
+            {
+                MessageBox.Show("Click!");
+            }
+
         }
 
         private void StartScan(object directory)
         {
             
-            folders = new() { ScanDirectory.RecursiveScan((string)directory) };
+            folders = new() { ScanDirectory.RecursiveScan((string)directory, 2) };
             directoryTree.ItemsSource = folders;
         }
 

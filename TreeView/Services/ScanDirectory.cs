@@ -43,48 +43,62 @@ namespace TreeView.Services
             return folder;
         }
 
-        public static FolderModel RecursiveScan(string directory)
+        public static FolderModel RecursiveScan(string directory, int depth)
         {
-            List<FolderModel> subFolders = new();
-            IEnumerable<string> dirs;
-            IEnumerable<string> files;
-            string dirName  = directory.Substring(directory.LastIndexOf("\\") + 1); 
-            FolderModel folder = new() { Name = string.IsNullOrEmpty(dirName) ? directory: dirName};
 
-            try
-            {
-                dirs = Directory.EnumerateDirectories(directory);
-                files = Directory.EnumerateFiles(directory);
-            }
-            catch (UnauthorizedAccessException)
-            {
-                folder.Name += " *** ACCESS DENIED ***";
+            
+                
+                List<FolderModel> subFolders = new();
+                IEnumerable<string> dirs;
+                IEnumerable<string> files;
+                string dirName = directory.Substring(directory.LastIndexOf("\\") + 1);
+                FolderModel folder = new() { Name = string.IsNullOrEmpty(dirName) ? directory : dirName };
+               if (depth > 0)
+               {
+                int tempDepth = --depth;
+                try
+                {
+                    dirs = Directory.EnumerateDirectories(directory);
+                    files = Directory.EnumerateFiles(directory);
+                }
+                catch (UnauthorizedAccessException)
+                {
+                    folder.Name += " *** ACCESS DENIED ***";
+                    return folder;
+                }
+
+
+                foreach (var dir in dirs)
+                {
+                    FolderModel tempFolder;// = new() { Name = dir.Substring(dir.LastIndexOf("\\") + 1), };
+                    tempFolder = RecursiveScan(dir, tempDepth);
+                    subFolders.Add(tempFolder);
+                    folder.Size += tempFolder.Size;
+                }
+
+                long filesSize = 0;
+
+                foreach (var file in files)
+                {
+                    FileInfo fileInfo = new(file);
+                    filesSize += fileInfo.Length;
+                    subFolders.Add(new FolderModel()
+                    {
+                        Name = file.Substring(file.LastIndexOf("\\") + 1),
+                        Size = fileInfo.Length,
+                        SubFolders = null
+                    });
+                }
+
+                folder.Size += filesSize;
+                folder.SubFolders = new ObservableCollection<FolderModel>(subFolders);
+
                 return folder;
             }
-            
-            foreach (var dir in dirs)
+            else
             {
-                FolderModel tempFolder;// = new() { Name = dir.Substring(dir.LastIndexOf("\\") + 1), };
-                tempFolder = RecursiveScan(dir);
-                subFolders.Add(tempFolder);
-                folder.Size += tempFolder.Size;
+                return folder;
             }
-
-            long filesSize = 0;
-
-            foreach (var file in files)
-            {
-                FileInfo fileInfo = new(file);
-                filesSize += fileInfo.Length;
-                subFolders.Add(new FolderModel() { Name = file.Substring(file.LastIndexOf("\\") + 1),
-                                                   Size = fileInfo.Length,
-                                                   SubFolders = null });
-            }
-
-            folder.Size += filesSize;
-            folder.SubFolders = new ObservableCollection<FolderModel>(subFolders);
-
-            return folder;
         }
     }
 }
