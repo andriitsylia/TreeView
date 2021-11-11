@@ -48,7 +48,8 @@ namespace TreeView.Services
             List<FolderModel> subFolders = new();
             IEnumerable<string> dirs;
             IEnumerable<string> files;
-            FolderModel folder = new() { Name = directory };
+            string dirName  = directory.Substring(directory.LastIndexOf("\\") + 1); 
+            FolderModel folder = new() { Name = string.IsNullOrEmpty(dirName) ? directory: dirName};
 
             try
             {
@@ -63,8 +64,8 @@ namespace TreeView.Services
             
             foreach (var dir in dirs)
             {
-                FolderModel tempFolder = new() { Name = dir };
-                tempFolder = RecursiveScan(tempFolder.Name);
+                FolderModel tempFolder;// = new() { Name = dir.Substring(dir.LastIndexOf("\\") + 1), };
+                tempFolder = RecursiveScan(dir);
                 subFolders.Add(tempFolder);
                 folder.Size += tempFolder.Size;
             }
@@ -75,7 +76,7 @@ namespace TreeView.Services
             {
                 FileInfo fileInfo = new(file);
                 filesSize += fileInfo.Length;
-                subFolders.Add(new FolderModel() { Name = file, //file.Substring(file.LastIndexOf("\\") + 1),
+                subFolders.Add(new FolderModel() { Name = file.Substring(file.LastIndexOf("\\") + 1),
                                                    Size = fileInfo.Length,
                                                    SubFolders = null });
             }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -24,18 +25,38 @@ namespace TreeView
     /// </summary>
     public partial class MainWindow : RibbonWindow
     {
+        ObservableCollection<FolderModel> folders;
         public MainWindow()
         {
             InitializeComponent();
             ObservableCollection<DriveModel> drives = GetDriveInfo.Get();
             bSelectDirectory_gScan.ItemsSource = drives;
+
+            //Thread t = Thread.CurrentThread;
+
+           ///MessageBox.Show($"Имя потока: {t.Name}\r\n"
+           //               + $"Запущен ли поток: {t.IsAlive}\r\n"
+           //               + $"Приоритет потока: {t.Priority}\r\n"
+           //               + $"Статус потока: {t.ThreadState}\r\n"
+           //               + $"Домен приложения: {Thread.GetDomain().FriendlyName}");
+
         }
 
         private void bSelectDirectory_gScan_Click(object sender, RoutedEventArgs e)
         {
+            //Thread t = new Thread(new ParameterizedThreadStart(StartScan));
             DriveModel drive = (DriveModel)((RibbonMenuItem)e.OriginalSource).DataContext;
             //MessageBox.Show(drive.Name);
-            ObservableCollection<FolderModel> folders = new() { ScanDirectory.RecursiveScan(drive.Name) };
+            //t.Start(drive.Name);
+            StartScan(drive.Name);
+            //ObservableCollection<FolderModel> folders = new() { ScanDirectory.RecursiveScan(drive.Name) };
+            //directoryTree.ItemsSource = folders;
+        }
+
+        private void StartScan(object directory)
+        {
+            
+            folders = new() { ScanDirectory.RecursiveScan((string)directory) };
             directoryTree.ItemsSource = folders;
         }
 
