@@ -20,63 +20,71 @@ using TreeView.Services;
 
 namespace TreeView
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : RibbonWindow
     {
-        ObservableCollection<FolderModel> folders;
+        ObservableCollection<FolderModel> folders = new();
+        List<SimpleFolderModel> simpleFolders;
+
         public MainWindow()
         {
             InitializeComponent();
             ObservableCollection<DriveModel> drives = GetDriveInfo.Get();
             bSelectDirectory_gScan.ItemsSource = drives;
-
-            //Thread t = Thread.CurrentThread;
-
-           ///MessageBox.Show($"Имя потока: {t.Name}\r\n"
-           //               + $"Запущен ли поток: {t.IsAlive}\r\n"
-           //               + $"Приоритет потока: {t.Priority}\r\n"
-           //               + $"Статус потока: {t.ThreadState}\r\n"
-           //               + $"Домен приложения: {Thread.GetDomain().FriendlyName}");
-
         }
 
         private void bSelectDirectory_gScan_Click(object sender, RoutedEventArgs e)
         {
-            //Thread t = new Thread(new ParameterizedThreadStart(StartScan));
             if (e.OriginalSource is RibbonMenuItem)
             {
                 DriveModel drive = (DriveModel)((RibbonMenuItem)e.OriginalSource).DataContext;
-                //MessageBox.Show(drive.Name);
-                //t.Start(drive.Name);
                 StartScan(drive.Name);
-                //ObservableCollection<FolderModel> folders = new() { ScanDirectory.RecursiveScan(drive.Name) };
                 //directoryTree.ItemsSource = folders;
+                //Thread.Sleep(300);
+                folders.Clear();
+                FolderModel folder = new FolderModel() { Name = drive.Name, Type = FolderType.Folder, SubFolders = new ObservableCollection<FolderModel>() { new FolderModel() { Name = "*" } } };
+                folders.Add(folder);
+                directoryTree.ItemsSource = folders;
+
+                //foreach (var subFolder in folders[0].SubFolders)
+                //{
+                //    if (subFolder.Type != FolderType.File)
+                //    {
+                //        Thread t = new Thread(new ParameterizedThreadStart(ScanDirectory.StartScan));
+                //        t.Start(subFolder);
+                //    }
+                //}
             }
             else if (sender is RibbonSplitButton)
             {
-                MessageBox.Show("Click!");
+                //directoryTree.ItemsSource = simpleFolders;
             }
-
         }
 
         private void StartScan(object directory)
         {
-            
-            folders = new() { ScanDirectory.RecursiveScan((string)directory, 2) };
-            directoryTree.ItemsSource = folders;
+            //folders = new() { ScanDirectory.Scan((string)directory) };
         }
 
         private void FolderExpand(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
-
+            
         }
 
         private void directoryTree_Expanded(object sender, RoutedEventArgs e)
         {
-            //FolderModel folder = (FolderModel)((TreeViewItem)e.OriginalSource).DataContext;
-            //MessageBox.Show($"{folder.Name}");
+            FolderModel folder = (FolderModel)((TreeViewItem)e.OriginalSource).DataContext;
+            folder.SubFolders = ScanDirectory.GetSubDirs(folder);
+            if (folder.SubFolders != null)
+            {
+                foreach (var subFolder in folder.SubFolders)
+                {
+                    if (subFolder.Type != FolderType.File)
+                    {
+                        Thread t = new Thread(new ParameterizedThreadStart(ScanDirectory.StartScanDirWithSubdirs));
+                        t.Start(subFolder);
+                    }
+                }
+            }
         }
 
         private void directoryTree_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
@@ -99,6 +107,27 @@ namespace TreeView
         private void RibbonWindow_MouseMove(object sender, MouseEventArgs e)
         {
             this.Title = e.GetPosition(this).ToString();
+        }
+
+        private void bRefresh_gScan_Click(object sender, RoutedEventArgs e)
+        {
+            //directoryTree.ItemsSource = simpleFolders;
+            directoryTree.Items.Refresh();
+        }
+
+        private void bStopScan_gScan_Click(object sender, RoutedEventArgs e)
+        {
+            //simpleFolders = new List<SimpleFolderModel>() { SimpleScanDirectory.SimpleScan("f:\\transcend") };
+            //foreach (var subFolder in simpleFolders[0].SubFolders)
+            //{
+            //    if (subFolder.Type != FolderType.File)
+            //    {
+            //        Thread t = new Thread(new ParameterizedThreadStart(SimpleScanDirectory.SimpleStartScan));
+            //        t.Start(subFolder);
+            //    }
+            //}
+            //MessageBox.Show("Threads are lunch!");
+            //directoryTree.ItemsSource = simpleFolders;
         }
     }
 }

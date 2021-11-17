@@ -85,11 +85,13 @@
                                   ToolTipTitle="Stop Scan (Shift+Ctrl+B)"
                                   ToolTipDescription="Stop scanning"
                                   LargeImageSource="Resources\Images\Home_stopscan.png"
-                                  IsEnabled="False"/>
+                                  IsEnabled="True"
+                                  Click="bStopScan_gScan_Click"/>
                     <RibbonButton x:Name="bRefresh_gScan" 
                                   Label="Refresh" 
                                   LargeImageSource="Resources\Images\Home_refresh.png"
-                                  IsEnabled="False"/>
+                                  IsEnabled="True"
+                                  Click="bRefresh_gScan_Click"/>
                 </RibbonGroup>
                 <RibbonGroup x:Name="ModeTab" Header="Mode">
                     <RibbonRadioButton x:Name="bSize_gMode" 
@@ -149,10 +151,12 @@
                         <Setter Property="IsExpanded" Value="True"/>
                     </Style>
                 </TreeView.ItemContainerStyle>-->
-                    <TreeView.ItemTemplate>
+                <TreeView.ItemTemplate>
                     <HierarchicalDataTemplate ItemsSource="{Binding Path=SubFolders}">
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="{Binding Size}" Width="100" TextAlignment="Right" Margin="0,0,10,0"/>
+                            <TextBlock Text="{Binding FoldersNumber}" Width="30" TextAlignment="Right" Margin="0,0,10,0"/>
+                            <TextBlock Text="{Binding FilesNumber}" Width="30" TextAlignment="Right" Margin="0,0,10,0"/>
+                            <TextBlock Text="{Binding Size}" Width="80" TextAlignment="Right" Margin="0,0,10,0"/>
                             <TextBlock Text="{Binding Name}"/>
                         </StackPanel>
                     </HierarchicalDataTemplate>
