@@ -140,6 +140,37 @@
             <RibbonTab x:Name="HelpTab" Header="Help"/>
         </Ribbon>
 
+        <Grid  DockPanel.Dock="Bottom" Height="250">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+        <DataGrid x:Name="DrivesGrid" CanUserAddRows="False" AutoGenerateColumns="False">
+                <DataGrid.Columns>
+                    <DataGridTemplateColumn Header="123">
+                        <!--<DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Path=Name}"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>-->
+                        <DataGridTemplateColumn.CellEditingTemplate>
+                            <DataTemplate>
+                                <!--<TreeView ItemsSource="{Binding Path=folders}" TreeViewItem.Expanded="directoryTree_Expanded">-->
+                                  <TreeView TreeViewItem.Expanded="directoryTree_Expanded" >
+                                    <TreeView.ItemTemplate>
+                                        <HierarchicalDataTemplate ItemsSource="{Binding Path=SubFolders}">
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="{Binding Path=Name}"/>
+                                            </StackPanel>
+                                        </HierarchicalDataTemplate>
+                                    </TreeView.ItemTemplate>
+                                </TreeView>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellEditingTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+        </DataGrid>
+        </Grid>
         <Grid>
             <TreeView x:Name="directoryTree" 
                       TreeViewItem.Expanded="directoryTree_Expanded" 
@@ -151,14 +182,22 @@
                         <Setter Property="IsExpanded" Value="True"/>
                     </Style>
                 </TreeView.ItemContainerStyle>-->
-                <TreeView.ItemTemplate>
+                    <TreeView.ItemTemplate>
                     <HierarchicalDataTemplate ItemsSource="{Binding Path=SubFolders}">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="{Binding FoldersNumber}" Width="30" TextAlignment="Right" Margin="0,0,10,0"/>
-                            <TextBlock Text="{Binding FilesNumber}" Width="30" TextAlignment="Right" Margin="0,0,10,0"/>
-                            <TextBlock Text="{Binding Size}" Width="80" TextAlignment="Right" Margin="0,0,10,0"/>
-                            <TextBlock Text="{Binding Name}"/>
-                        </StackPanel>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                        <!--<StackPanel Orientation="Horizontal">-->
+                            <TextBlock Text="{Binding FoldersNumber}" Grid.Column="0" Width="30" TextAlignment="Right" Margin="0,0,10,0"/>
+                            <TextBlock Text="{Binding FilesNumber}" Grid.Column="1" Width="30" TextAlignment="Right" Margin="0,0,10,0"/>
+                            <TextBlock Text="{Binding Size}" Grid.Column="2" Width="80" TextAlignment="Right" Margin="0,0,10,0"/>
+                            <TextBlock Text="{Binding Name}" Grid.Column="3" />
+                        <!--</StackPanel>-->
+                        </Grid>
                     </HierarchicalDataTemplate>
                 </TreeView.ItemTemplate>
             </TreeView>

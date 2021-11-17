@@ -30,6 +30,7 @@ namespace TreeView
             InitializeComponent();
             ObservableCollection<DriveModel> drives = GetDriveInfo.Get();
             bSelectDirectory_gScan.ItemsSource = drives;
+            //DrivesGrid.ItemsSource = drives;
         }
 
         private void bSelectDirectory_gScan_Click(object sender, RoutedEventArgs e)
@@ -44,6 +45,8 @@ namespace TreeView
                 FolderModel folder = new FolderModel() { Name = drive.Name, Type = FolderType.Folder, SubFolders = new ObservableCollection<FolderModel>() { new FolderModel() { Name = "*" } } };
                 folders.Add(folder);
                 directoryTree.ItemsSource = folders;
+                DrivesGrid.ItemsSource = folders;
+                //dirTree.ItemsSource = folders;
 
                 //foreach (var subFolder in folders[0].SubFolders)
                 //{
