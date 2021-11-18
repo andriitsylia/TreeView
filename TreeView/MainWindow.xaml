@@ -8,7 +8,7 @@
         x:Name="RibbonWindow"
         Width="900" Height="600"
         WindowStartupLocation="CenterScreen"
-        ResizeMode="CanResizeWithGrip" MouseMove="RibbonWindow_MouseMove">
+        ResizeMode="CanResizeWithGrip">
     <DockPanel>
         <DockPanel.Resources>
 
@@ -16,7 +16,7 @@
 
             <StatusBar DockPanel.Dock="Bottom">
             <StatusBarItem Width="206">
-                <TextBlock x:Name="sbFreeSpace" Text="Free space"/>
+                <TextBlock x:Name="sbFreeSpace" Text="FreeSpace"/>
             </StatusBarItem>
             <Separator></Separator>
             <StatusBarItem Width="115">
@@ -85,8 +85,7 @@
                                   ToolTipTitle="Stop Scan (Shift+Ctrl+B)"
                                   ToolTipDescription="Stop scanning"
                                   LargeImageSource="Resources\Images\Home_stopscan.png"
-                                  IsEnabled="True"
-                                  Click="bStopScan_gScan_Click"/>
+                                  IsEnabled="False"/>
                     <RibbonButton x:Name="bRefresh_gScan" 
                                   Label="Refresh" 
                                   LargeImageSource="Resources\Images\Home_refresh.png"
@@ -140,7 +139,7 @@
             <RibbonTab x:Name="HelpTab" Header="Help"/>
         </Ribbon>
 
-        <Grid  DockPanel.Dock="Bottom" Height="250">
+        <!--<Grid  DockPanel.Dock="Bottom" Height="250">
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="*"/>
@@ -148,14 +147,14 @@
         <DataGrid x:Name="DrivesGrid" CanUserAddRows="False" AutoGenerateColumns="False">
                 <DataGrid.Columns>
                     <DataGridTemplateColumn Header="123">
-                        <!--<DataGridTemplateColumn.CellTemplate>
+                        --><!--<DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding Path=Name}"/>
                             </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>-->
+                        </DataGridTemplateColumn.CellTemplate>--><!--
                         <DataGridTemplateColumn.CellEditingTemplate>
                             <DataTemplate>
-                                <!--<TreeView ItemsSource="{Binding Path=folders}" TreeViewItem.Expanded="directoryTree_Expanded">-->
+                                --><!--<TreeView ItemsSource="{Binding Path=folders}" TreeViewItem.Expanded="directoryTree_Expanded">--><!--
                                   <TreeView TreeViewItem.Expanded="directoryTree_Expanded" >
                                     <TreeView.ItemTemplate>
                                         <HierarchicalDataTemplate ItemsSource="{Binding Path=SubFolders}">
@@ -170,39 +169,29 @@
                     </DataGridTemplateColumn>
                 </DataGrid.Columns>
         </DataGrid>
-        </Grid>
+        </Grid>-->
         <Grid>
             <TreeView x:Name="directoryTree" 
                       TreeViewItem.Expanded="directoryTree_Expanded" 
-                      TreeViewItem.Collapsed="directoryTree_Collapsed"
-                      TreeViewItem.Selected="directoryTree_Selected"
-                      MouseLeftButtonUp="directoryTree_MouseLeftButtonUp" >
+                      TreeViewItem.Selected="directoryTree_Selected">
                 <!--<TreeView.ItemContainerStyle>
                     <Style TargetType="{x:Type TreeViewItem}">
                         <Setter Property="IsExpanded" Value="True"/>
                     </Style>
                 </TreeView.ItemContainerStyle>-->
-                    <TreeView.ItemTemplate>
+                <TreeView.ItemTemplate>
                     <HierarchicalDataTemplate ItemsSource="{Binding Path=SubFolders}">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-                        <!--<StackPanel Orientation="Horizontal">-->
-                            <TextBlock Text="{Binding FoldersNumber}" Grid.Column="0" Width="30" TextAlignment="Right" Margin="0,0,10,0"/>
-                            <TextBlock Text="{Binding FilesNumber}" Grid.Column="1" Width="30" TextAlignment="Right" Margin="0,0,10,0"/>
-                            <TextBlock Text="{Binding Size}" Grid.Column="2" Width="80" TextAlignment="Right" Margin="0,0,10,0"/>
-                            <TextBlock Text="{Binding Name}" Grid.Column="3" />
-                        <!--</StackPanel>-->
-                        </Grid>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding FoldersNumber}" Width="40" TextAlignment="Right" Margin="0,0,10,0"/>
+                            <TextBlock Text="{Binding FilesNumber}" Width="40" TextAlignment="Right" Margin="0,0,10,0"/>
+                            <TextBlock Text="{Binding Size}" Width="80" TextAlignment="Right" Margin="0,0,10,0"/>
+                            <TextBlock Text="{Binding ShortName}"/>
+                        </StackPanel>
                     </HierarchicalDataTemplate>
                 </TreeView.ItemTemplate>
             </TreeView>
         </Grid>
-        
+
     </DockPanel>
 </RibbonWindow>
  

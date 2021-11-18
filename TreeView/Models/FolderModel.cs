@@ -19,6 +19,7 @@ namespace TreeView.Models
     public class FolderModel : INotifyPropertyChanged
     {
         private string _name;
+        private string _shortName;
         private long _size;
         private FolderType _type;
         private int _foldersNumber;
@@ -38,19 +39,24 @@ namespace TreeView.Models
                 OnPropertyChanged();
             }
         }
-        
+
+        public string ShortName
+        {
+            get
+            {
+                return _shortName;
+            }
+            set
+            {
+                if (value == _shortName) return;
+                _shortName = value;
+                OnPropertyChanged();
+            }
+        }
         public long Size
         {
             get
             {
-                if (SubFolders != null)
-                {
-                    _size += SubFolders.Select(sf => sf.Size).Sum();
-                    //foreach (var subFolders in SubFolders)
-                    //{
-                    //    _size += subFolders.Size;
-                    //}
-                }
                 return _size;
             }
             set
