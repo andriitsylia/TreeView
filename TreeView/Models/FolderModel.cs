@@ -21,6 +21,7 @@ namespace TreeView.Models
         private string _name;
         private string _shortName;
         private long _size;
+        private string _sizeStr;
         private FolderType _type;
         private int _foldersNumber;
         private int _filesNumber;
@@ -66,7 +67,20 @@ namespace TreeView.Models
                 OnPropertyChanged();
             }
         }
-        
+        public string SizeStr
+        {
+            get
+            {
+                return _sizeStr;
+            }
+            set
+            {
+                if (value == _sizeStr) return;
+                _sizeStr = value;
+                OnPropertyChanged();
+            }
+        }
+
         public FolderType Type
         {
             get
@@ -76,6 +90,7 @@ namespace TreeView.Models
             set
             {
                 _type = value;
+                OnPropertyChanged();
             }
         }
 

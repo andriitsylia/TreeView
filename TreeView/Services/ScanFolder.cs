@@ -10,18 +10,13 @@ using TreeView.Models;
 
 namespace TreeView.Services
 {
-    public static class ScanDirectory
+    public class ScanFolder
     {
-        public static void StartScanDirWithSubdirs(object folder)
-        {
-            ScanDirWithSubdirs((FolderModel)folder);
-        }
-
-        public static void ScanDirWithSubdirs(FolderModel folder)
+        private static void ScanFirstLevelFolder(FolderModel folder)
         {
             try
             {
-                folder.SubFolders = GetSubDirs(folder.Name);
+                folder.SubFolders = ScanSecondLevelFolder(folder.Name);
                 if (folder.SubFolders != null)
                 {
                     var listDirs = Directory.EnumerateDirectories(folder.Name, "*", new EnumerationOptions() { AttributesToSkip = 0, RecurseSubdirectories = true });
@@ -29,6 +24,7 @@ namespace TreeView.Services
                     var listFiles = Directory.EnumerateFiles(folder.Name, "*", new EnumerationOptions() { AttributesToSkip = 0, RecurseSubdirectories = true });
                     Thread.Sleep(200);
                     folder.Size = listFiles.Select(file => new FileInfo(file).Length).Sum();
+                    folder.SizeStr = string.Format(new FileSizeFormatProvider(), "{0:fs}", folder.Size);
                     folder.Type = FolderType.Folder;
                     folder.FoldersNumber = listDirs.Select(dir => dir).Count();
                     folder.FilesNumber = listFiles.Select(file => file).Count();
@@ -44,7 +40,7 @@ namespace TreeView.Services
             }
         }
 
-        public static ObservableCollection<FolderModel> GetSubDirs(string folderName)
+        private static ObservableCollection<FolderModel> ScanSecondLevelFolder(string folderName)
         {
             ObservableCollection<FolderModel> folders;
             try
@@ -54,30 +50,26 @@ namespace TreeView.Services
                 folders = new ObservableCollection<FolderModel>();
                 foreach (var folder in subfolders)
                 {
-                    folders.Add(new FolderModel()
-                    {
-                        Name = folder,
-                        ShortName = "[" + folder[(folder.LastIndexOf("\\") + 1)..] + "]",
-                        Size = 0,
-                        Type = FolderType.Folder,
-                        FoldersNumber = 0,
-                        FilesNumber = 0,
-                        SubFolders = null
-                    });
+                    folders.Add(new FolderModel() { Name = folder,
+                                                    ShortName = "[" + folder[(folder.LastIndexOf("\\") + 1)..] + "]",
+                                                    Size = 0,
+                                                    SizeStr = string.Format(new FileSizeFormatProvider(), "{0:fs}", 0),
+                                                    Type = FolderType.Folder,
+                                                    FoldersNumber = 0,
+                                                    FilesNumber = 0,
+                                                    SubFolders = null });
                 }
                 foreach (var file in subfiles)
                 {
                     FileInfo fileInfo = new(file);
-                    folders.Add(new FolderModel()
-                    {
-                        Name = file,
-                        ShortName = file[(file.LastIndexOf("\\") + 1)..],
-                        Size = fileInfo.Length,
-                        Type = FolderType.File,
-                        FoldersNumber = 0,
-                        FilesNumber = 0,
-                        SubFolders = null
-                    });
+                    folders.Add(new FolderModel() { Name = file,
+                                                    ShortName = file[(file.LastIndexOf("\\") + 1)..],
+                                                    Size = fileInfo.Length,
+                                                    SizeStr = string.Format(new FileSizeFormatProvider(), "{0:fs}", fileInfo.Length),
+                                                    Type = FolderType.File,
+                                                    FoldersNumber = 0,
+                                                    FilesNumber = 0,
+                                                    SubFolders = null });
                 }
             }
             catch (UnauthorizedAccessException)
@@ -85,6 +77,11 @@ namespace TreeView.Services
                 folders = null;
             }
             return folders;
+        }
+
+        public static void Scan(object folder)
+        {
+            ScanFirstLevelFolder((FolderModel)folder);
         }
     }
 }
