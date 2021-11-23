@@ -12,17 +12,21 @@ namespace TreeView.Services
 {
     public class ScanFolder
     {
+        private const string NO_ACCESS_FOLDER = " *** NO ACCESS ***";
+        private const string SCAN_ALL_DIRECTORIES = "*";
+        private const string SCAN_ALL_FILES = "*";
+        private const string DIRECTORY_LEFT_SYMBOL = "[";
+        private const string DIRECTORY_RIGHT_SYMBOL = "]";
+        private const string DIRECTORY_SLASH = "\\";
         private static void ScanFirstLevelFolder(FolderModel folder)
         {
-            try
-            {
+            //try
+            //{
                 folder.SubFolders = ScanSecondLevelFolder(folder.Name);
                 if (folder.SubFolders != null)
                 {
-                    var listDirs = Directory.EnumerateDirectories(folder.Name, "*", new EnumerationOptions() { AttributesToSkip = 0, RecurseSubdirectories = true });
-                    Thread.Sleep(200);
-                    var listFiles = Directory.EnumerateFiles(folder.Name, "*", new EnumerationOptions() { AttributesToSkip = 0, RecurseSubdirectories = true });
-                    Thread.Sleep(200);
+                    var listDirs = Directory.EnumerateDirectories(folder.Name, SCAN_ALL_DIRECTORIES, new EnumerationOptions() { AttributesToSkip = 0, RecurseSubdirectories = true });
+                    var listFiles = Directory.EnumerateFiles(folder.Name, SCAN_ALL_FILES, new EnumerationOptions() { AttributesToSkip = 0, RecurseSubdirectories = true });
                     folder.Size = listFiles.Select(file => new FileInfo(file).Length).Sum();
                     folder.SizeStr = string.Format(new FileSizeFormatProvider(), "{0:fs}", folder.Size);
                     folder.Type = FolderType.Folder;
@@ -31,13 +35,14 @@ namespace TreeView.Services
                 }
                 else
                 {
-                    folder.ShortName += " *** NO ACCESS ***";
+                    folder.ShortName += NO_ACCESS_FOLDER;
                     folder.Type = FolderType.NoAccessFolder;
                 }
-            }
-            catch (UnauthorizedAccessException)
-            {
-            }
+            //}
+            //catch (UnauthorizedAccessException ex)
+            //{
+
+            //}
         }
 
         private static ObservableCollection<FolderModel> ScanSecondLevelFolder(string folderName)
@@ -51,7 +56,7 @@ namespace TreeView.Services
                 foreach (var folder in subfolders)
                 {
                     folders.Add(new FolderModel() { Name = folder,
-                                                    ShortName = "[" + folder[(folder.LastIndexOf("\\") + 1)..] + "]",
+                                                    ShortName = DIRECTORY_LEFT_SYMBOL + folder[(folder.LastIndexOf(DIRECTORY_SLASH) + 1)..] + DIRECTORY_RIGHT_SYMBOL,
                                                     Size = 0,
                                                     SizeStr = string.Format(new FileSizeFormatProvider(), "{0:fs}", 0),
                                                     Type = FolderType.Folder,
@@ -63,7 +68,7 @@ namespace TreeView.Services
                 {
                     FileInfo fileInfo = new(file);
                     folders.Add(new FolderModel() { Name = file,
-                                                    ShortName = file[(file.LastIndexOf("\\") + 1)..],
+                                                    ShortName = file[(file.LastIndexOf(DIRECTORY_SLASH) + 1)..],
                                                     Size = fileInfo.Length,
                                                     SizeStr = string.Format(new FileSizeFormatProvider(), "{0:fs}", fileInfo.Length),
                                                     Type = FolderType.File,

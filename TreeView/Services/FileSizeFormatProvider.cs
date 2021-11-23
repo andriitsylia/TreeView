@@ -18,7 +18,7 @@ namespace TreeView.Services
         private const decimal OneKiloByte = 1024M;
         private const decimal OneMegaByte = OneKiloByte * 1024M;
         private const decimal OneGigaByte = OneMegaByte * 1024M;
-        private const decimal OneTeraByte = OneMegaByte * 1024M * 1024M;
+        private const decimal OneTeraByte = OneGigaByte * 1024M;
 
         public string Format(string format, object arg, IFormatProvider formatProvider)
         {
