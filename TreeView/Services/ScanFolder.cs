@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using TreeView.Models;
+using System.Diagnostics;
 
 namespace TreeView.Services
 {
@@ -20,8 +21,8 @@ namespace TreeView.Services
         private const string DIRECTORY_SLASH = "\\";
         private static void ScanFirstLevelFolder(FolderModel folder)
         {
-            //try
-            //{
+            try
+            {
                 folder.SubFolders = ScanSecondLevelFolder(folder.Name);
                 if (folder.SubFolders != null)
                 {
@@ -38,11 +39,19 @@ namespace TreeView.Services
                     folder.ShortName += NO_ACCESS_FOLDER;
                     folder.Type = FolderType.NoAccessFolder;
                 }
-            //}
-            //catch (UnauthorizedAccessException ex)
-            //{
-
-            //}
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                Trace.WriteLine("*** UNAUTHORIZED ACCESS EXCEPTION ***");
+                Trace.WriteLine($"{ex.GetType().Name}: {ex.Message}");
+                Trace.WriteLine("*****************");
+            }
+            catch (ArgumentException ex)
+            {
+                Trace.WriteLine("*** ARGUMENT EXCEPTION ***");
+                Trace.WriteLine($"{ex.GetType().Name}: {ex.Message}");
+                Trace.WriteLine("*****************");
+            }
         }
 
         private static ObservableCollection<FolderModel> ScanSecondLevelFolder(string folderName)
@@ -77,10 +86,21 @@ namespace TreeView.Services
                                                     SubFolders = null });
                 }
             }
-            catch (UnauthorizedAccessException)
+            catch (UnauthorizedAccessException ex)
             {
                 folders = null;
+                Trace.WriteLine("*** UNAUTHORIZED ACCESS EXCEPTION ***");
+                Trace.WriteLine($"{ex.GetType().Name}: {ex.Message}");
+                Trace.WriteLine("*****************");
             }
+            catch (ArgumentException ex)
+            {
+                folders = null;
+                Trace.WriteLine("*** ARGUMENT EXCEPTION ***");
+                Trace.WriteLine($"{ex.GetType().Name}: {ex.Message}");
+                Trace.WriteLine("*****************");
+            }
+
             return folders;
         }
 
